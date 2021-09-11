@@ -1,0 +1,41 @@
+genero,periodo,area_de_atuacao,editor_de_texto,sistema_operacional,ling_prog_ctx_ger,nota_ling_prog_ctx_ger,ling_prog_conhece,ling_prog_ctx_backend,nota_ling_prog_ctx_backend,tipo_bd,ling_prog_ctx_frontend,nota_ling_prog_ctx_frontend
+Masculino,Entre 2019.1 e 2020.2,Engenharia de Software,Visual Studio Code,Linux,TypeScript,4,"C/C++, Go, Java, JavaScript, Python, TypeScript",Outra,4,Relacional,JavaScript,4
+Masculino,Entre 2019.1 e 2020.2,Engenharia de Software,Visual Studio Code,Linux,TypeScript,5,"Java, JavaScript, Python, TypeScript",JavaScript,5,Não relacional,TypeScript,5
+Masculino,Entre 2017.2 e 2018.2,Análise de Dados,Visual Studio Code,Linux,Python,4,"Bash/Shell, C/C++, Java, JavaScript, Python, R",JavaScript,4,Relacional,JavaScript,4
+Feminino,Anterior ou igual ao 2015.2,Engenharia de Software,Eclipse,Windows,Java,4,"Assembly, C/C++, Java, JavaScript, Python",Java,4,Relacional,JavaScript,5
+Masculino,Entre 2017.2 e 2018.2,Análise de Dados,Visual Studio Code,Linux,R,4,"Bash/Shell, C/C++, Java, JavaScript, Python, R",Java,5,Relacional,JavaScript,3
+Masculino,Entre 2017.2 e 2018.2,Análise de Dados,Visual Studio Code,Linux,Python,4,"C/C++, C#/Visual Basic, Java, JavaScript, Python, R, TypeScript",Java,4,Relacional,JavaScript,4
+Masculino,Entre 2017.2 e 2018.2,Engenharia de Software,Visual Studio Code,Linux,JavaScript,5,"Bash/Shell, C/C++, C#/Visual Basic, Go, Java, JavaScript, PHP, Python, R, TypeScript",JavaScript,5,Relacional,JavaScript,5
+Outro/prefiro não dizer,Entre 2017.2 e 2018.2,Sistemas Distribuídos,Outro,Linux,Python,4,"Bash/Shell, C/C++, Go, Java, JavaScript, PHP, Python, R, TypeScript",Python,5,Relacional,JavaScript,5
+Masculino,Entre 2017.2 e 2018.2,Análise de Dados,Visual Studio Code,Windows,R,5,"C/C++, Java, JavaScript, Python, R, TypeScript",Java,4,Relacional,TypeScript,4
+Feminino,Entre 2017.2 e 2018.2,Análise de Dados,Visual Studio Code,Linux,JavaScript,4,"C/C++, Java, JavaScript, Python, TypeScript",Python,5,Não relacional,HTML/CSS,5
+Masculino,Entre 2016.1 e 2017.1,Jogos,Visual Studio Code,Linux,JavaScript,5,"Bash/Shell, C/C++, C#/Visual Basic, Go, Java, JavaScript, PHP, Python, TypeScript",JavaScript,5,Não relacional,JavaScript,5
+Masculino,Entre 2019.1 e 2020.2,Engenharia de Software,IntelliJ,Linux,Java,5,"Java, JavaScript, PHP, Python, TypeScript",Java,5,Relacional,HTML/CSS,5
+Feminino,Entre 2019.1 e 2020.2,Análise de Dados,Visual Studio Code,Linux,JavaScript,5,"Assembly, Bash/Shell, Java, JavaScript, Python, R, TypeScript",Java,3,Relacional,JavaScript,5
+Masculino,Entre 2019.1 e 2020.2,Engenharia de Software,Visual Studio Code,Windows,Java,4,"C/C++, Java, JavaScript, Python",JavaScript,4,Relacional,HTML/CSS,5
+Masculino,Entre 2016.1 e 2017.1,Engenharia de Software,IntelliJ,Windows,Java,5,"Java, JavaScript, PHP, Python, R",Java,5,Relacional,JavaScript,4
+Masculino,Entre 2019.1 e 2020.2,Engenharia de Software,IntelliJ,Linux,Java,5,"Java, JavaScript, Python, TypeScript",Java,5,Relacional,JavaScript,4
+Feminino,Entre 2016.1 e 2017.1,Engenharia de Software,IntelliJ,Windows,Java,5,"C/C++, Java, JavaScript, Python",Java,5,Não relacional,JavaScript,4
+Masculino,Entre 2019.1 e 2020.2,Segurança,Sublime,Linux,Python,5,"Bash/Shell, Java, Python",Java,2,Não relacional,Outra,3
+Masculino,Entre 2016.1 e 2017.1,Engenharia de Software,Visual Studio Code,Linux,TypeScript,4,"Bash/Shell, C/C++, C#/Visual Basic, Go, Java, JavaScript, PHP, Python, R, Ruby, TypeScript",Java,4,Relacional,TypeScript,4
+Masculino,Entre 2019.1 e 2020.2,Nenhuma das citadas acima,Visual Studio Code,Linux,Java,5,"Assembly, Bash/Shell, C/C++, Java, JavaScript, Python, Ruby, TypeScript",JavaScript,4,Não relacional,TypeScript,5
+Masculino,Entre 2019.1 e 2020.2,Engenharia de Software,Visual Studio Code,Linux,TypeScript,5,"C/C++, C#/Visual Basic, Go, Java, JavaScript, Python, Ruby, Swift, TypeScript",JavaScript,4,Relacional,TypeScript,5
+Feminino,Entre 2017.2 e 2018.2,Análise de Dados,Outro,Windows,Python,5,"C/C++, Java, JavaScript, Python, R",Java,5,Relacional,JavaScript,1
+Masculino,Entre 2017.2 e 2018.2,Análise de Dados,Visual Studio Code,Linux,Python,4,"C/C++, Java, JavaScript, Python, R",Java,4,Relacional,JavaScript,2
+Masculino,Entre 2016.1 e 2017.1,Engenharia de Software,Visual Studio Code,Windows,C/C++,5,"C/C++, C#/Visual Basic, Go, Java, JavaScript, Python, TypeScript",Go,3,Relacional,TypeScript,1
+Feminino,Anterior ou igual ao 2015.2,Engenharia de Software,Eclipse,Windows,Java,5,"Java, JavaScript, Python, R, TypeScript",Java,5,Relacional,TypeScript,4
+Masculino,Entre 2019.1 e 2020.2,Análise de Dados,Visual Studio Code,Windows,Java,4,"Assembly, C/C++, C#/Visual Basic, Java, Python",Java,4,Relacional,JavaScript,3
+Masculino,Entre 2019.1 e 2020.2,Nenhuma das citadas acima,Visual Studio Code,Windows,JavaScript,5,"C/C++, C#/Visual Basic, Java, JavaScript, Python, TypeScript",JavaScript,5,Não relacional,JavaScript,5
+Masculino,Entre 2016.1 e 2017.1,Sistemas Distribuídos,Visual Studio Code,Linux,Outra,5,"Bash/Shell, C/C++, C#/Visual Basic, Go, Java, JavaScript, Python, R, TypeScript",C#/Visual Basic,4,Não relacional,TypeScript,5
+Feminino,Entre 2019.1 e 2020.2,Segurança,Visual Studio Code,Linux,Python,5,"C/C++, Java, JavaScript, Python",JavaScript,4,Relacional,HTML/CSS,5
+Masculino,Entre 2019.1 e 2020.2,Engenharia de Software,Sublime,Linux,C/C++,5,"Bash/Shell, C/C++, Java, JavaScript, Python",JavaScript,5,Relacional,JavaScript,5
+Masculino,Entre 2017.2 e 2018.2,Análise de Dados,Visual Studio,Linux,Python,5,"Bash/Shell, C/C++, Java, JavaScript, Python, TypeScript",JavaScript,5,Relacional,JavaScript,4
+Masculino,Entre 2016.1 e 2017.1,Engenharia de Software,Visual Studio Code,Linux,JavaScript,4,"Bash/Shell, C/C++, C#/Visual Basic, Go, Java, JavaScript, PHP, Python, TypeScript",JavaScript,4,Não relacional,JavaScript,4
+Masculino,Entre 2017.2 e 2018.2,Engenharia de Software,Visual Studio Code,Linux,TypeScript,5,"C/C++, C#/Visual Basic, Go, Java, JavaScript, PHP, Python, R, TypeScript",JavaScript,5,Não relacional,TypeScript,5
+Masculino,Entre 2019.1 e 2020.2,Engenharia de Software,Visual Studio Code,Linux,C/C++,5,"Bash/Shell, C/C++, Go, Java, JavaScript, Python",Go,5,Relacional,JavaScript,5
+Masculino,Entre 2017.2 e 2018.2,Engenharia de Software,IntelliJ,Linux,Java,5,"C/C++, Java, JavaScript, Python, R, TypeScript",Java,5,Relacional,TypeScript,4
+Feminino,Entre 2016.1 e 2017.1,Engenharia de Software,Visual Studio Code,Linux,JavaScript,5,"C/C++, Java, JavaScript, Python",JavaScript,5,Relacional,JavaScript,5
+Masculino,Entre 2017.2 e 2018.2,Jogos,Visual Studio Code,Linux,Python,5,"Bash/Shell, C/C++, Java, JavaScript, Python, R",Python,5,Não relacional,JavaScript,5
+Masculino,Entre 2017.2 e 2018.2,Engenharia de Software,Visual Studio Code,MacOS,Go,5,"Assembly, Bash/Shell, C/C++, C#/Visual Basic, Go, Java, JavaScript, Python, R",Go,5,Relacional,JavaScript,4
+Masculino,Entre 2016.1 e 2017.1,Engenharia de Software,Visual Studio Code,Linux,TypeScript,5,"Bash/Shell, C/C++, C#/Visual Basic, Java, JavaScript, Python, R, TypeScript",Python,4,Relacional,TypeScript,5
+Feminino,Entre 2016.1 e 2017.1,Engenharia de Software,Visual Studio Code,Windows,Java,4,"C/C++, Java, JavaScript, Python, R",Java,4,Relacional,JavaScript,4

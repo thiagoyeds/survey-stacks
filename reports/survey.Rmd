@@ -1,0 +1,620 @@
+---
+title: "Survey sobre preferências de stacks entre os alunos de Ciência da Computação (UFCG)"
+output:
+    html_document:
+    df_print: paged
+    code_folding: hide
+theme: sandstone
+params: 
+    arquivo_dados: "data/data.csv"
+---
+
+# Introdução
+
+## Objetivo
+
+Estudar quais as preferências dos alunos de ciência da computação (UFCG) acerca do uso de linguagem de programação e seus demais contextos.
+
+## Obtenção dos dados
+
+Foi criado um gform (https://forms.gle/BNiREzFTsuHckLk49) e enviado para todos os alunos de ciência da computação (UFCG) por meio de email eletrônio entre os dias 12/08/2021 - 21/08/2021, com o total de 40 respostas sobre as seguintes perguntas:
+
+1. Gênero?
+2. Em que período você ingressou no curso?
+3. Qual a sua preferência de área de atuação?
+4. Qual o seu editor de texto favorito? (o mais utilizado no dia a dia)
+5. Qual o sistema operacional mais utilizado no seu dia a dia para fins de projeto/estágio/laboratórios/exercícios acadêmicos/profissional?
+6. Qual a sua preferência de linguagem de programação, em geral?
+7. Qual nota você atribui à linguagem de programação selecionada acima em relação a documentação, suporte, clareza, ...?
+8. Qual(is) da(s) linguagem(ns) de programação abaixo você conhece? (sabe fazer um "hello world")
+9. Qual a sua preferência de linguagem de programação para back-end?
+10. Qual nota você atribui a linguagem de programação selecionada acima? (em relação a documentação, suporte, clareza...)
+11. Geralmente, você costuma utilizar banco de dados relacional ou não relacional?
+12. Qual a sua preferência de linguagem de programação para front-end?
+13. Qual nota você atribui a linguagem de programação selecionada acima? (em relação a documentação, suporte, clareza...)
+
+## Hipóteses
+
+Buscamos verificar a partir das respostas as seguintes hipóteses:
+
+- A preferência de área de atuação é **Engenharia de Software**
+- A linguagem de programação mais utilizada entre os novatos é **Python**
+- A linguagem de programação mais utilizada entre os veteranos/concluientes é **Java**
+- A melhor linguagem de programação para back-end é **Go**
+- A melhor linguagem de programação para front-end é **Javascript**
+- É melhor utilizar banco de dados **não relacional**
+
+## Grupos
+
+Para cada pergunta iremos verificar as hipóteses ocorrem nos seguintes grupos:
+
+- por gênero (masculino / feminino / outra)
+- periodo (entre 2019.1 e 2020.2 / entre 2017.2 e 2018.2 / entre 2016.1 e 2017.1 / anterior ou igual ao 2015.2)
+- área de atuação (ES / Análise de Dados / Segurança / Infraestrutura / Acadêmica / Sistemas Distribuídos / Jogos / Outra)
+- editor de texto (Eclipse / IntelliJ / NetBeans / pyCharm / Sublime / Visual Studio / Visual Studio Code / Outro)
+- sistema operacional (Windows / Linux / MacOS / Android / Outro)
+
+## Observações sobre os grupos
+
+Aqui estão algumas observações sobre os grupos
+
+### Por gênero
+Das 40 respostas, 30 são "masculino", 9 são "feminino" e somente 1 "outro", por esse motivo, nesse estudo iremos ignorar o dado único pois não há amostras suficientes do grupo para verificarmos alguma hipótese. O grupo "feminino" reflete bem a realidade dos cursos de Ciência da Computação, no qual o percentual de homens é maior do que o das mulheres.
+
+### Por período
+Das 40 respostas, houve representatividade nos 4 subgrupos de intervalos de périodos, portantos todos serão considerados no estudo.
+
+### Por área de atuação
+Das 40 respostas, não houve respondentes que preferem as áres de infraestrutura e acadêmica, por esse motivo, nesse estudo iremos ignorar esses subgrupos.
+
+### Por editor de texto
+Das 40 respostas, a grande maioria, 28 respondentes, possuem o Visual Studio Code como favorito, e 5 para IntelliJ, os outros grupos possuem somente 2, portanto iremos ignora-los.
+
+### Por sistema operacional
+Das 40 respostas, não houve respondentes que utilizam com maior frequência para o Android, e não houve amostra signficativa para o MacOS, portanto iremos ignorar esses subgrupos.
+
+# Estudo com R
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(broom)
+library(ggbeeswarm)
+library(gridExtra)
+library(boot)
+library(hrbrthemes)
+
+theme_set(theme_ipsum_rc())
+
+set.seed(7)
+
+knitr::opts_chunk$set(tidy = FALSE,
+                      fig.width = 6,
+                      fig.height = 5)
+
+```
+
+## Variáveis
+
+- **genero** significa gênero ao qual o respondente se declara
+- **periodo** significa qual intervalo de periodo o respondente ingressou no curso
+- **area_de_atuacao** significa qual a preferência de area de atuação do respondente
+- **editor_de_texto** significa qual o editor de texto favorito do respondente
+- **sistema_operacional** significa qual o sistema operacional que o respondente mais utiliza
+- **ling_prog_ctx_ger** significa qual a preferência linguagem de programação em contexto geral do respondente
+- **nota_ling_prog_ctx_ger** representa a nota que o respondente atribui a linguagem de programação em contexto geral
+- **ling_prog_conhece** representa as linguagens de programação que o respondente conhece
+- **ling_prog_ctx_backend** significa qual a preferência linguagem de programação para back-end do respondente
+- **nota_ling_prog_ctx_backend** representa a nota que o respondente atribui a linguagem de programação para back-end
+- **tipo_bd** represente a utilização de banco de dados relacional ou não relacional pelo respondente
+- **ling_prog_ctx_frontend** significa qual a preferência linguagem de programação para front-end do respondente
+- **nota_ling_prog_ctx_frontend** representa a nota que o respondente atribui a linguagem de programação para front-end
+
+```{r}
+responses = read_csv(
+  here::here(params$arquivo_dados),
+    col_types = cols(
+      genero = col_character(),
+      periodo = col_character(),
+      area_de_atuacao = col_character(),
+      editor_de_texto = col_character(),
+      sistema_operacional = col_character(),
+      ling_prog_ctx_ger = col_character(),
+      nota_ling_prog_ctx_ger = col_double(),
+      ling_prog_conhece = col_character(),
+      ling_prog_ctx_backend = col_character(),
+      nota_ling_prog_ctx_backend = col_double(),
+      tipo_bd = col_character(),
+      ling_prog_ctx_frontend = col_character(),
+      nota_ling_prog_ctx_frontend = col_double()
+    )
+  )
+
+grupo_por_periodo = responses
+grupo_por_area_de_atuacao = responses %>%
+  filter(area_de_atuacao != "Infraestrutura", area_de_atuacao != "Acadêmica")
+grupo_por_sistema_operacional = responses %>%
+  filter(sistema_operacional != "Android", sistema_operacional != "MacOS")
+grupo_por_editor_texto = responses %>%
+  filter(editor_de_texto %in% c("Visual Studio Code", "IntelliJ"))
+
+glimpse(responses)
+```
+
+## Preferência de área de atuação
+
+### Geral
+
+```{r}
+s <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(eng_soft_mean = sum(area_de_atuacao == "Engenharia de Software") / n()) %>% 
+      pull(eng_soft_mean)
+    
+    a
+}
+
+booted <- boot(data = responses,
+               statistic = s, 
+               R = 2000)
+
+estimado = tidy(booted, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado)
+```
+```{r}
+estimado %>% 
+    ggplot(aes(
+        ymin = conf.low * 100,
+        y = statistic * 100,
+        ymax = conf.high * 100,
+        x = ""
+    )) +
+    geom_linerange() +
+    geom_point(color = "steelblue", size = 2) +
+    geom_text(
+        aes(
+            y = conf.high*100,
+            label = str_glue("[{round(conf.low*100, 2)}, {round(conf.high*100, 2)}]")
+        ),
+        size = 3,
+        nudge_x = -.05,
+        show.legend = F
+    )  +
+    scale_y_continuous(limits = c(0,100)) +
+    labs(
+        title = "Estimação com 95% de confiança da preferência\ndos alunos de ciência da computação - UFCG",
+        subtitle = "Área: Engenharia de software",
+        x = "", y = "% dos alunos") +
+    coord_flip()
+```
+
+### Périodo
+
+Observamos claramente que em todos os grupos de périodo, a área de atuação de preferência dos respondentes continua sendo **Engenharia de Software**, uma exceção a isso é durante o período de 2017.2 e 2018.2 em que houve um pico para a área de **Análise de Dados**.
+
+```{r}
+novatos_x_veteranos_area_atuacao = responses %>%
+  mutate(class = periodo)
+
+novatos_x_veteranos_area_atuacao$class[novatos_x_veteranos_area_atuacao$class == "Entre 2019.1 e 2020.2"] = "novatos"
+novatos_x_veteranos_area_atuacao$class[novatos_x_veteranos_area_atuacao$class == "Entre 2017.2 e 2018.2"] = "veteranos"
+novatos_x_veteranos_area_atuacao$class[novatos_x_veteranos_area_atuacao$class == "Entre 2016.1 e 2017.1"] = "concluientes"
+novatos_x_veteranos_area_atuacao$class[novatos_x_veteranos_area_atuacao$class == "Anterior ou igual ao 2015.2"] = "concluientes"
+
+novatos_x_veteranos_area_atuacao %>%
+  group_by(class, area_de_atuacao) %>%
+  count() %>%
+  ggplot(aes(y = area_de_atuacao, x = n)) +
+  facet_grid(~ class) +
+  geom_bar(stat='identity') +
+  labs(
+    title = "Preferência dos respondentes em relação a área\nde atuação versus tipo de aluno",
+    x = "Quantidade de respondentes",
+    y = ""
+  )
+```
+
+### Sistema operacional
+
+
+```{r}
+grupo_por_sistema_operacional %>%
+  group_by(sistema_operacional, area_de_atuacao) %>%
+  count() %>%
+  ggplot(aes(y = reorder(area_de_atuacao, n), x = n)) +
+  facet_wrap(~ sistema_operacional, ncol = 1) +
+  geom_bar(stat='identity') +
+  labs(
+    title = "Preferência dos respondentes em relação a área\nde atuação versus sistema operacional",
+    x = "Quantidade de respondentes",
+    y = ""
+  ) +
+  scale_x_continuous(breaks = seq(from = 0, to = 14, by = 2))
+```
+
+### Editor de texto
+
+```{r}
+grupo_por_editor_texto %>%
+  group_by(editor_de_texto, area_de_atuacao) %>%
+  count() %>%
+  ggplot(aes(y = reorder(area_de_atuacao, n), x = n)) +
+  facet_wrap(~ editor_de_texto, ncol = 1) +
+  geom_bar(stat='identity') +
+  labs(
+    title = "Preferência dos respondentes em relação a área\nde atuação versus editor de texto favorito",
+    x = "Quantidade de respondentes",
+    y = ""
+  ) +
+  scale_x_continuous(breaks = seq(from = 0, to = 14, by = 2))
+```
+
+## Linguagem de programação no contexto geral
+
+### Geral
+
+```{r}
+java_ctx_ger <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(java_mean = sum(ling_prog_ctx_ger == "Java") / n()) %>% 
+      pull(java_mean)
+    
+    a
+}
+
+booted_java <- boot(data = responses,
+               statistic = java_ctx_ger, 
+               R = 2000)
+
+estimado_java = tidy(booted_java, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado_java)
+```
+
+```{r}
+py_ctx_ger <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(py_mean = sum(ling_prog_ctx_ger == "Python") / n()) %>% 
+      pull(py_mean)
+    
+    a
+}
+
+booted_py <- boot(data = responses,
+               statistic = py_ctx_ger, 
+               R = 2000)
+
+estimado_py = tidy(booted_py, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado_py)
+```
+
+```{r}
+js_ctx_ger <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(js_mean = sum(ling_prog_ctx_ger == "JavaScript") / n()) %>% 
+      pull(js_mean)
+    
+    a
+}
+
+booted_js <- boot(data = responses,
+               statistic = js_ctx_ger, 
+               R = 2000)
+
+estimado_js = tidy(booted_js, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado_js)
+```
+
+```{r}
+estimado_java = estimado_java %>%
+  mutate(ling = "Java")
+
+estimado_py = estimado_py %>%
+  mutate(ling = "Python")
+
+estimado_js = estimado_js %>%
+  mutate(ling = "Javascript")
+
+estimado_ctx_ger = merge(estimado_java, estimado_py, all = TRUE)
+estimado_ctx_ger = merge(estimado_ctx_ger, estimado_js, all = TRUE)
+
+estimado_ctx_ger %>% 
+    ggplot(aes(
+        ymin = conf.low * 100,
+        y = statistic * 100,
+        ymax = conf.high * 100,
+        x = ling
+    )) +
+    geom_linerange() +
+    geom_point(color = "steelblue", size = 2) +
+    geom_text(
+        aes(
+            y = conf.high*100,
+            label = str_glue("[{round(conf.low*100, 2)}, {round(conf.high*100, 2)}]")
+        ),
+        size = 3,
+        nudge_x = -.1,
+        show.legend = F
+    )  +
+    scale_y_continuous(limits = c(0,100)) +
+    labs(
+        title = "Estimação com 95% de confiança da preferência\ndos alunos de ciência da computação - UFCG",
+        subtitle = "Contexto geral",
+        x = "linguagem de programação", y = "% dos alunos") +
+    coord_flip()
+```
+
+## periodo
+
+```{r}
+novatos_x_veteranos = responses %>%
+  mutate(class = periodo)
+
+novatos_x_veteranos$class[novatos_x_veteranos$class == "Entre 2019.1 e 2020.2"] = "novatos"
+novatos_x_veteranos$class[novatos_x_veteranos$class == "Entre 2017.2 e 2018.2"] = "veteranos"
+novatos_x_veteranos$class[novatos_x_veteranos$class == "Entre 2016.1 e 2017.1"] = "concluientes"
+novatos_x_veteranos$class[novatos_x_veteranos$class == "Anterior ou igual ao 2015.2"] = "concluientes"
+
+novatos_x_veteranos %>%
+  group_by(class, ling_prog_ctx_ger) %>%
+  count() %>%
+  ggplot(aes(y = reorder(ling_prog_ctx_ger, n), x = n)) +
+  facet_grid(~class) +
+  geom_bar(stat='identity') +
+  labs(
+    title = "Preferência dos respondentes em relação a linguagem\n de programação no contexto geral versus tipo de aluno",
+    x = "Quantidade de respondentes",
+    y = ""
+  ) +
+  scale_x_continuous(breaks = seq(from = 0, to = 7, by = 2))
+```
+
+## Linguagem de programação no contexto de back-end
+
+```{r}
+java_ctx_backend <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(java_mean = sum(ling_prog_ctx_backend == "Java") / n()) %>% 
+      pull(java_mean)
+    
+    a
+}
+
+booted_java <- boot(data = responses,
+               statistic = java_ctx_backend, 
+               R = 2000)
+
+estimado_java = tidy(booted_java, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado_java)
+```
+
+```{r}
+js_ctx_backend <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(js_mean = sum(ling_prog_ctx_backend == "JavaScript") / n()) %>% 
+      pull(js_mean)
+    
+    a
+}
+
+booted_js <- boot(data = responses,
+               statistic = js_ctx_backend, 
+               R = 2000)
+
+estimado_js = tidy(booted_js, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado_js)
+```
+
+```{r}
+estimado_java = estimado_java %>%
+  mutate(ling = "Java")
+
+estimado_js = estimado_js %>%
+  mutate(ling = "JavaScript")
+
+estimado_ctx_backend = merge(estimado_java, estimado_js, all = TRUE)
+
+estimado_ctx_backend %>% 
+    ggplot(aes(
+        ymin = conf.low * 100,
+        y = statistic * 100,
+        ymax = conf.high * 100,
+        x = ling
+    )) +
+    geom_linerange() +
+    geom_point(color = "steelblue", size = 2) +
+    geom_text(
+        aes(
+            y = conf.high*100,
+            label = str_glue("[{round(conf.low*100, 2)}, {round(conf.high*100, 2)}]")
+        ),
+        size = 3,
+        nudge_x = -.1,
+        show.legend = F
+    )  +
+    scale_y_continuous(limits = c(0,100)) +
+    labs(
+        title = "Estimação com 95% de confiança da preferência\ndos alunos de ciência da computação - UFCG",
+        subtitle = "Contexto backend",
+        x = "linguagem de programação", y = "% dos alunos") +
+    coord_flip()
+```
+
+## Linguagem de programação no contexto de front-end
+
+```{r}
+ts_ctx_frontend <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(ts_mean = sum(ling_prog_ctx_frontend == "TypeScript") / n()) %>% 
+      pull(ts_mean)
+    
+    a
+}
+
+booted_ts <- boot(data = responses,
+               statistic = ts_ctx_frontend, 
+               R = 2000)
+
+estimado_ts = tidy(booted_ts, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado_ts)
+```
+
+```{r}
+js_ctx_frontend <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(js_mean = sum(ling_prog_ctx_frontend == "JavaScript") / n()) %>% 
+      pull(js_mean)
+    
+    a
+}
+
+booted_js <- boot(data = responses,
+               statistic = js_ctx_frontend, 
+               R = 2000)
+
+estimado_js = tidy(booted_js, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado_js)
+```
+
+```{r}
+estimado_ts = estimado_ts %>%
+  mutate(ling = "TypeScript")
+
+estimado_js = estimado_js %>%
+  mutate(ling = "JavaScript")
+
+estimado_ctx_frontend = merge(estimado_ts, estimado_js, all = TRUE)
+
+estimado_ctx_frontend %>% 
+    ggplot(aes(
+        ymin = conf.low * 100,
+        y = statistic * 100,
+        ymax = conf.high * 100,
+        x = ling
+    )) +
+    geom_linerange() +
+    geom_point(color = "steelblue", size = 2) +
+    geom_text(
+        aes(
+            y = conf.high*100,
+            label = str_glue("[{round(conf.low*100, 2)}, {round(conf.high*100, 2)}]")
+        ),
+        size = 3,
+        nudge_x = -.1,
+        show.legend = F
+    )  +
+    scale_y_continuous(limits = c(0,100)) +
+    labs(
+        title = "Estimação com 95% de confiança da preferência\ndos alunos de ciência da computação - UFCG",
+        subtitle = "Contexto frontend",
+        x = "linguagem de programação", y = "% dos alunos") +
+    coord_flip()
+```
+
+## Banco de dados relacional ou não relacional
+
+```{r}
+tb_relacional <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(tb_relacional_mean = sum(tipo_bd == "Relacional") / n()) %>% 
+      pull(tb_relacional_mean)
+    
+    a
+}
+
+booted_tb_relacional <- boot(data = responses,
+               statistic = tb_relacional, 
+               R = 2000)
+
+estimado_tb_relacional = tidy(booted_tb_relacional, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado_tb_relacional)
+```
+
+```{r}
+tb_nao_relacional <- function(d, i) {
+    a = d[i,] %>% 
+      summarise(tb_nao_relacional_mean = sum(tipo_bd == "Não relacional") / n()) %>% 
+      pull(tb_nao_relacional_mean)
+    
+    a
+}
+
+booted_tb_nao_relacional <- boot(data = responses,
+               statistic = tb_nao_relacional,
+               R = 2000)
+
+estimado_tb_nao_relacional = tidy(booted_tb_nao_relacional, 
+                conf.level = .95,
+                conf.method = "basic",
+                conf.int = TRUE)
+
+glimpse(estimado_tb_nao_relacional)
+```
+
+```{r}
+estimado_tb_nao_relacional = estimado_tb_nao_relacional %>%
+  mutate(tipo = "Não relacional")
+
+estimado_tb_relacional = estimado_tb_relacional %>%
+  mutate(tipo = "Relacional")
+
+estimado_tb = merge(estimado_tb_nao_relacional, estimado_tb_relacional, all = TRUE)
+
+estimado_tb %>% 
+    ggplot(aes(
+        ymin = conf.low * 100,
+        y = statistic * 100,
+        ymax = conf.high * 100,
+        x = tipo
+    )) +
+    geom_linerange() +
+    geom_point(color = "steelblue", size = 2) +
+    geom_text(
+        aes(
+            y = conf.high*100,
+            label = str_glue("[{round(conf.low*100, 2)}, {round(conf.high*100, 2)}]")
+        ),
+        size = 3,
+        nudge_x = -.1,
+        show.legend = F
+    )  +
+    scale_y_continuous(limits = c(0,100)) +
+    labs(
+        title = "Estimação com 95% de confiança da preferência\ndos alunos de ciência da computação - UFCG",
+        x = "Tipo de banco de dados", y = "% dos alunos") +
+    coord_flip()
+```
